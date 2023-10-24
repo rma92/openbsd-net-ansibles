@@ -1,0 +1,25 @@
+---
+- name: Create directory and set ownership
+  hosts: your_target_server  # Replace with the target server or group of servers
+  become: yes  # Run tasks with sudo or as root
+
+  tasks:
+    - name: Create directory if it doesn't exist
+      ansible.builtin.file:
+        path: /var/www/htdocs/as207419.net/
+        state: directory
+        owner: daemon
+        group: daemon
+        mode: '0755'
+      register: directory_created
+
+    - name: Ensure directory is created and owned by daemon
+      ansible.builtin.command:
+        cmd: ls -ld /var/www/htdocs/as207419.net/
+      register: check_directory
+
+    - name: Debug output
+      ansible.builtin.debug:
+        msg: "Directory exists and is owned by daemon"
+      when: check_directory.stdout.find("daemon daemon") != -1
+
