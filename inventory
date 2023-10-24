@@ -1,4 +1,4 @@
-[na_servers]
+[na_servers:children]
 us_servers
 ca_servers
 
@@ -6,6 +6,7 @@ ca_servers
 us_west_servers
 us_central_servers
 us_east_servers
+nj_servers
 us_pac_servers
 
 [us_west_servers]
@@ -21,7 +22,6 @@ dfw.i.rm.vg ansible_connection=ssh
 [us_east_servers]
 atl.i.rm.vg ansible_connection=ssh
 iad.i.rm.vg ansible_connection=ssh
-nj_servers
 
 [nj_servers]
 ewr.i.rm.vg ansible_connection=ssh
