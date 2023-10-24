@@ -1,0 +1,72 @@
+[na_servers]
+us_servers
+ca_servers
+
+[us_servers:children]
+us_west_servers
+us_central_servers
+us_east_servers
+us_pac_servers
+
+[us_west_servers]
+sfo.i.rm.vg ansible_connection=ssh
+sjo.i.rm.vg ansible_connection=ssh
+lax.i.rm.vg ansible_connection=ssh
+sea.i.rm.vg ansible_connection=ssh
+
+[us_central_servers]
+ord.i.rm.vg ansible_connection=ssh
+dfw.i.rm.vg ansible_connection=ssh
+
+[us_east_servers]
+atl.i.rm.vg ansible_connection=ssh
+iad.i.rm.vg ansible_connection=ssh
+nj_servers
+
+[nj_servers]
+ewr.i.rm.vg ansible_connection=ssh
+ewr2.i.rm.vg ansible_connection=ssh
+ny2.i.rm.vg ansible_connection=ssh
+
+[us_pac_servers]
+hnl.i.rm.vg ansible_connection=ssh
+
+[ca_servers]
+tor.i.rm.vg ansible_connection=ssh
+
+[latam_servers]
+sao.i.rm.vg ansible_connection=ssh
+mex.i.rm.vg ansible_connection=ssh
+
+[asia_servers]
+nrt.i.rm.vg ansible_connection=ssh
+icn.i.rm.vg ansible_connection=ssh
+sin.i.rm.vg ansible_connection=ssh
+bom.i.rm.vg ansible_connection=ssh
+bom2.i.rm.vg ansible_connection=ssh
+
+[oceania_servers]
+syd.i.rm.vg ansible_connection=ssh
+
+[emea_servers:children]
+uk_servers
+eu_servers
+is_servers
+africa_servers
+ru_servers
+
+[uk_servers]
+lhr.i.rm.vg ansible_connection=ssh
+
+[eu_servers]
+ams.i.rm.vg ansible_connection=ssh
+
+[is_servers]
+tlv.i.rm.vg ansible_connection=ssh
+
+[africa_servers]
+jnb.i.rm.vg ansible_connection=ssh
+
+[ru_servers]
+svo.i.rm.vg ansible_connection=ssh
+khv.i.rm.vg ansible_connection=ssh
