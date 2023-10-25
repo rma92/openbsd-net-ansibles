@@ -1,0 +1,71 @@
+---
+- name: Set up web server
+  hosts: all   # Target server from the inventory
+  become: yes  # To run the task with sudo or root privileges
+
+  tasks:
+    - name: Backup old files if needed
+      command: mv /var/www/htdocs/as207419.net/ /var/www/htdocs/as207419.net_b4_{{ ansible_date_time.epoch }}
+      args:
+        creates: /var/www/htdocs/as207419.net_b4_{{ ansible_date_time.epoch }}
+      ignore_errors: yes
+
+    - name: Create Directory
+      file:
+        path: /var/www/htdocs/as207419.net
+        state: directory
+        owner: daemon  # Replace with the appropriate username
+        group: daemon  # Replace with the appropriate group
+        mode: '0755'           # Adjust permissions as needed
+
+    - name: Download index.template.html
+      get_url:
+        url: https://raw.githubusercontent.com/rma92/as207419_site/main/index.template.html
+        dest: /var/www/htdocs/as207419.net/index.template.html
+        owner: "daemon"
+        group: "daemon"
+        mode: '0644'  # Adjust permissions as needed
+
+    - name: Replace VAR_HOSTNAME in index.template.html
+      shell: |
+        cat /var/www/htdocs/as207419.net/index.template.html | sed "s/VAR_HOSTNAME/`hostname`/g" > /var/www/htdocs/as207419.net/index.html
+
+    - name: Copy httpd.conf to /etc
+      copy:
+        src: files/httpd.conf
+        dest: /etc/httpd.conf
+        owner: root
+        group: wheel
+        mode: '0644'  # Adjust permissions as needed
+
+    - name: Enable HTTPD Service
+      command: rcctl enable httpd
+      async: 300  # Set a timeout in seconds
+
+    - name: Start or Restart HTTPD Service
+      service:
+        name: httpd
+        state: started
+
+    - name: Reload HTTPD Service
+      service:
+        name: httpd
+        state: reloaded
+
+    - name: Copy relayd.conf to /etc
+      copy:
+        src: files/relayd.conf
+        dest: /etc/relayd.conf
+        owner: root
+        group: wheel
+        mode: '0644'  # Adjust permissions as needed
+
+    - name: Enable Relayd Service
+      command: rcctl enable relayd
+      async: 300  # Set a timeout in seconds
+
+    - name: Start Relayd Service
+      command: rcctl start relayd
+
+    - name: Reload Relayd Service
+      command: rcctl reload relayd

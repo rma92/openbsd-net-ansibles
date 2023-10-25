@@ -1,0 +1,14 @@
+---
+- name: Create Directory on Server
+  hosts: all   # Target server from the inventory
+  become: yes  # To run the task with sudo or root privileges
+
+  tasks:
+    - name: Create Directory
+      file:
+        path: /var/www/htdocs/as207419.net
+        state: directory
+        owner: daemon  # Replace with the appropriate username
+        group: daemon  # Replace with the appropriate group
+        mode: '0755'           # Adjust permissions as needed
+

@@ -1,0 +1,8 @@
+---
+- name: Reload relayd
+  hosts: all   # Target server from the inventory
+  become: yes  # To run the task with sudo or root privileges
+
+  tasks:
+    - name: Reload Relayd Service
+      command: rcctl reload relayd
