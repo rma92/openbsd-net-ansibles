@@ -4,8 +4,11 @@ Set Up Openbsd Ansibles
 ## Old versions of OpenBSD - set install URL to something with the packages
 ```
 echo "https://ftp.lysator.liu.se/pub/OpenBSD" > /etc/installurl
+pkg_add python-3.8.12
 ```
 (On vultr's install, the default content is "https://cdn.openbsd.org/pub/OpenBSD",  however old versions are not kept on OpenBSD's FTP)
+
+Vultr systems had Python installed, but ansible won't work if Python is not present, and it's not in the default install.
 
 ## Add a root ssh key for using ansible
 ### Create a key (as your normal user)
