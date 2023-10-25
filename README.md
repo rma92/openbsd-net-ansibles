@@ -34,6 +34,13 @@ sudo sh -c 'mkdir -p /root/.ssh && echo "<CONTENTS_OF_ID_RSA.PUB>" >> /root/.ssh
 ssh -i ~/.ssh/id_rsa root@<hostname>
 ```
 
+### Use SSH-Agent when you're going to run ansible
+(So you don't have to type the passphrase)
+```
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+```
+
 ## Set up Ansible
 Configuring OpenBSD servers using Ansible is a great way to automate and manage your infrastructure. The steps you've outlined are a good start, but there are a few more details to consider. Here's a more comprehensive guide on how to get started:
 
