@@ -1,5 +1,6 @@
 ---
 - name: Run ifconfig and Display Results
+  hosts: all
   #become: yes
 
   tasks:

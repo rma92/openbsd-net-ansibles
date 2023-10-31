@@ -1,6 +1,25 @@
 # openbsd-net-ansibles
 Set Up Openbsd Ansibles
 
+# Running a playbook
+To run something against an entire inventory:
+```
+ansible-playbook -i monitor_inventory.ini playbooks/ifconfig_check.yml
+```
+
+Run it on specific hosts in the inventory:
+```
+ansible-playbook -i inventory.ini -l sjo.i.rm.vg,ny.i.rm.vg your_playbook.yml
+```
+
+Run it on a group of hosts in the inventory:
+```
+ansible-playbook -i inventory.ini --limit europe_hosts create_directory.yml
+```
+(`-l` and `--limit` are the same parameter)
+
+(They're set up to run as root on the network, so you need root's private key.  TODO: make them run using sudo/doas)
+
 ## Old versions of OpenBSD - set install URL to something with the packages
 ```
 echo "https://ftp.lysator.liu.se/pub/OpenBSD" > /etc/installurl
