@@ -4,9 +4,10 @@
   become: yes
   tasks:
     - name: Install node_exporter package
-      pkgng:
-        name: node_exporter
-        state: present
+      command: pkg_add -U node_exporter
+      args:
+        creates: /usr/local/bin/node_exporter
+      changed_when: false  # Indicate that the command doesn't change system state
 
     - name: Enable and start node_exporter service
       service:
