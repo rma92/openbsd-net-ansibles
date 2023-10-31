@@ -1,0 +1,45 @@
+---
+- name: Install and configure node_exporter on OpenBSD
+  hosts: your_openbsd_server
+  remote_user: your_ssh_user
+  become: yes
+  tasks:
+    - name: Install node_exporter package
+      pkgng:
+        name: node_exporter
+        state: present
+
+    - name: Enable and start node_exporter service
+      service:
+        name: node_exporter
+        enabled: yes
+        state: started
+
+    - name: Add firewall rules to /etc/pf.conf
+      blockinfile:
+        path: /etc/pf.conf
+        block: |
+          # Block port 9100 from everywhere
+          block in inet proto tcp to any port 9100
+
+          # Allow access to port 9100 from 149.28.99.67
+          pass in quick inet proto tcp from 149.28.99.67 to any port 9100
+        state: present
+      become_user: root
+
+    - name: Check pf configuration for errors
+      command: pfctl -nf /etc/pf.conf
+      become_user: root
+      ignore_errors: yes
+      register: pf_check_result
+
+    - name: Print pfctl output if configuration has errors
+      debug:
+        var: pf_check_result.stdout_lines
+      when: pf_check_result.rc != 0
+
+    - name: Apply pf configuration
+      command: pfctl -f /etc/pf.conf
+      become_user: root
+      when: pf_check_result.rc == 0
+
