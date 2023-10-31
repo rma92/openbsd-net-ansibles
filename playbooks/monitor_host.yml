@@ -1,7 +1,6 @@
 ---
 - name: Install and configure node_exporter on OpenBSD
-  hosts: your_openbsd_server
-  remote_user: your_ssh_user
+  hosts: all
   become: yes
   tasks:
     - name: Install node_exporter package
