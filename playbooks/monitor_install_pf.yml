@@ -1,0 +1,38 @@
+---
+- name: Install monitor_pf.conf and configure PF for Monitoring Hosts
+  hosts: monitor_servers
+  become: yes  # To run the tasks with sudo or root privileges
+
+  tasks:
+    - name: Backup /etc/pf.conf
+      command: mv /etc/pf.conf /etc/pf_{{ ansible_date_time.epoch }}.conf
+      args:
+        creates: /etc/pf_{{ ansible_date_time.epoch }}.conf
+      register: backup_result
+      changed_when: false  # Indicate that the command doesn't change system state
+
+    - name: Copy monitor_pf.conf to /etc/pf.conf
+      copy:
+        src: files/monitor_pf.conf
+        dest: /etc/pf.conf
+        owner: root
+        group: wheel
+        mode: '0644'
+      when: backup_result.rc == 0  # Only copy if backup was successful
+
+    - name: Validate PF configuration
+      command: pfctl -nf /etc/pf.conf
+      register: pf_validation_result
+      ignore_errors: yes
+      changed_when: false
+      failed_when: "pf_validation_result.rc != 0"
+      no_log: true
+
+    - name: Revert to backup if validation fails
+      command: mv /etc/pf_{{ ansible_date_time.epoch }}.conf /etc/pf.conf
+      when: pf_validation_result.failed and backup_result.rc == 0
+
+    - name: Load PF configuration
+      command: pfctl -f /etc/pf.conf
+      when: pf_validation_result.rc == 0
+
