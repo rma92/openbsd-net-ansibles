@@ -4,8 +4,18 @@
   # Put the public key for svc_admin in files/svc_admin_rsa_key.pub
   hosts: all
   become: yes
-  vars_files:
-    - svc_deploy_vault.yml
+  vars:
+    svc_admin_pwd: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          38303366356630383063646234373734396463633962323864636562353332376661373366613635
+          3639363530383262633566393135353261393137633664310a323134366665636335666163303832
+          64613466343565383164333262333931313939326264393531373439353731353631393837636563
+          3065326630336438370a363265373636303162326563613566386236633362366364633130333339
+          3739
+    #Password1
+    #Use ansible-vault encrypt_string --name 'svc_admin_pwd', enter a vault password, and the password for the user.
+#  vars_files:
+#    - svc_deploy_vault.yml
 
   tasks:
     - name: Ensure svc_admin user exists
@@ -18,7 +28,8 @@
     - name: Set svc_admin user password
       user:
         name: svc_admin
-        password: "{{ svc_admin_password }}"
+        password: "{{ svc_admin_pwd | string | password_hash('sha512') }}"        
+        #password: "{{ svc_admin_password }}"
         #password: "{{ svc_admin_password | password_hash('sha512') }}"
       when: not (ansible_check_mode | bool)
 
