@@ -1,0 +1,14 @@
+---
+- name: Run ifconfig and Display Results
+  #become: yes
+
+  tasks:
+    - name: Run ifconfig
+      command: ifconfig
+      register: ifconfig_output
+      changed_when: false  # Indicate that the command doesn't change system state
+
+    - name: Display ifconfig Output
+      debug:
+        var: ifconfig_output.stdout_lines
+
