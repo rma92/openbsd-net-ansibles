@@ -1,0 +1,15 @@
+---
+- name: Get pf.conf and Display Results
+  hosts: all
+  #become: yes
+
+  tasks:
+    - name: Get pf
+      command: cat /etc/pf.conf
+      register: pf_output
+      changed_when: false  # Indicate that the command doesn't change system state
+
+    - name: Display pf Output
+      debug:
+        var: pf_output.stdout_lines
+
