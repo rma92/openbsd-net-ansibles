@@ -1,0 +1,16 @@
+---
+- name: Run whoami and Display Results
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Run whoami
+      command: whoami
+      register: whoami_output
+      changed_when: false  # Indicate that the command doesn't change system state
+
+    - name: Display whoami Output
+      debug:
+        var: whoami_output.stdout_lines
+
+

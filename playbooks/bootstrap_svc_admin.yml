@@ -18,7 +18,7 @@
     - name: Set svc_admin user password
       user:
         name: svc_admin
-        password: "{{ svc_admin_password }}"
+        password: "{{ svc_admin_password_hash }}"
       when: not (ansible_check_mode | bool)
 
     - name: Add svc_admin to sudoers without password
