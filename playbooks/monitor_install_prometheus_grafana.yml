@@ -1,0 +1,15 @@
+---
+- name: Install Prometheus and Grafana on OpenBSD
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install Prometheus and Grafana
+      become_method: sudo
+      become_user: root
+      package:
+        name:
+          - prometheus
+          - grafana
+        state: present
+      when: ansible_system == 'OpenBSD'
+
