@@ -1,0 +1,13 @@
+# /etc/ssh/sshd_config
+
+{{ ansible_managed | comment }}
+
+# ... (other existing configuration)
+
+AuthorizedKeysFile .ssh/authorized_keys
+Subsystem sftp /usr/libexec/sftp-server
+PermitRootLogin no
+PasswordAuthentication yes
+
+Match User svc_admin
+PasswordAuthentication no

@@ -1,0 +1,49 @@
+---
+- name: Configure svc_admin user and SSH settings
+  # Set up svc_deploy_vault.yml to contain svc_admin_password
+  # Put the public key for svc_admin in files/svc_admin_rsa_key.pub
+  hosts: all
+  become: yes
+  vars_files:
+    - svc_deploy_vault.yml
+
+  tasks:
+    - name: Ensure svc_admin user exists
+      user:
+        name: svc_admin
+        createhome: yes
+        state: present
+      when: not (ansible_check_mode | bool)
+
+    - name: Set svc_admin user password
+      user:
+        name: svc_admin
+        password: "{{ svc_admin_password | password_hash('sha512') }}"
+      when: not (ansible_check_mode | bool)
+
+    - name: Add svc_admin to sudoers without password
+      lineinfile:
+        dest: /etc/sudoers
+        line: "svc_admin ALL=(ALL) NOPASSWD: ALL"
+        validate: 'visudo -cf %s'
+      when: not (ansible_check_mode | bool)
+
+    - name: Add svc_admin's public key to authorized_keys
+      authorized_key:
+        user: svc_admin
+        key: "{{ lookup('file', 'files/svc_admin_rsa_key.pub') }}"
+        state: present
+      when: not (ansible_check_mode | bool)
+
+    - name: Update sshd_config
+      template:
+        src: files/monitor_sshd_config.j2
+        dest: /etc/ssh/sshd_config
+      notify: Restart SSH
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: sshd
+        state: restarted
+

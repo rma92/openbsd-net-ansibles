@@ -1,0 +1,10 @@
+- name: Install Python on OpenBSD (for initial bootstrap)
+  hosts: any
+  remote_user: root
+  tasks:
+  - name: Set InstallUrl
+    raw: sh -c "echo 'https://ftp.fau.de/pub/OpenBSD' > /etc/installurl"
+  - name: Install Sudo
+    raw: pkg_add sudo--
+  - name: Install Python
+    raw: pkg_add -U -v python%3.8
